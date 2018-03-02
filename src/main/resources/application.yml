@@ -1,0 +1,53 @@
+# config context path to "/" by setting an empty string
+server:
+  contextPath:
+  port:
+
+# JACKSON
+#spring:
+#  jackson:
+#    serialization:
+#      INDENT_OUTPUT: true
+
+#  h2:
+#    console:
+#      enabled: true
+
+#  datasource:
+#    url: jdbc:h2:~/test;DB_CLOSE_ON_EXIT=FALSE
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
+#  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+
+# MYSQL
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      # possible values: validate | update | create | create-drop
+      ddl-auto: update
+      # MySQL5Dialect does not support sequences,
+      # so must change the GenerationType.SEQUENCE in the entity beans to 'GenerationType.AUTO' or 'GenerationType.IDENTITY'
+      dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: jdbc:mysql://localhost/db_jwt?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: root
+    driverClassName: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 604800
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+
+#logging:
+#  level:
+#    org.springframework:
+#      security: DEBUG

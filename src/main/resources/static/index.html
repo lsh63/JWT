@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JWT Spring Security Demo</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+	integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+	crossorigin="anonymous">
+
+</head>
+<body>
+	<div class="container">
+		<h1>TimeBook</h1><h5>JWT Spring Security Demo</h5>
+
+		<div class="alert alert-danger" id="notLoggedIn">Not logged in!</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-default" id="login">
+					<div class="panel-heading">
+						<h3 class="panel-title">User Login</h3>
+					</div>
+					<div class="panel-body">
+						<form id="loginForm">
+							<div class="form-group">
+								<input type="text" class="form-control" id="exampleInputEmail1"
+									placeholder="username" required name="username" value="admin">
+							</div>
+							<div class="form-group">
+								<input type="password" class="form-control"
+									id="exampleInputPassword1" placeholder="password" required
+									name="password" value="admin">
+							</div>
+							<div>
+								<button type="submit" class="btn btn-default">login</button>
+							</div>
+							<br>
+							<div class="well">
+								Try one of the following logins
+								<ul>
+									<li>admin & admin</li>
+									<li>user & password</li>
+									<li>disabled & password</li>
+								</ul>
+							</div>
+						</form>
+						<h5><b>CREATE USER</b></h5>
+						<form id="sign-in" action="http://127.0.0.1:8080/user/create" method="post">
+							<div class="form-group">
+								<input type="text" class="form-control" id="exampleInputUsername2"
+									placeholder="username | Digits/Letters:4<num<50" required name="username">
+							</div>
+							<div class="form-group">
+								<input type="password" class="form-control" id="exampleInputPassword2"
+								 placeholder="password | Digits/Letters:4<num<50" required name="password">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="exampleInputFirstname2"
+									placeholder="firstname  | Digits/Letters:4<num<50" required name="firstname">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="exampleInputLastname2"
+									placeholder="lastname  | Digits/Letters:4<num<50" required name="lastname">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="exampleInputEmail2"
+									placeholder="email | Please enter the correct email format." required name="email">
+							</div>
+							<div>
+								<button type="submit" class="btn btn-default">sign-in</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div id="userInfo">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Authenticated user</h3>
+						</div>
+						<div class="panel-body">
+							<div id="userInfoBody"></div>
+							<button type="button" class="btn btn-default" id="logoutButton">logout</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button type="button" class="btn btn-default" id="removetokenButton">移除token</button>
+
+			<div class="col-md-6">
+				<div class="btn-group" role="group" aria-label="..."
+					style="margin-bottom: 16px;">
+					<button type="button" class="btn btn-default"
+						id="exampleServiceBtn">call example service</button>
+					<button type="button" class="btn btn-default" id="adminServiceBtn">call
+						admin protected service</button>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Response:</h3>
+					</div>
+					<div class="panel-body">
+						<pre id="response"></pre>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="loggedIn" class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Token information</h3>
+					</div>
+					<div class="panel-body" id="loggedInBody"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 文章列表 -->
+		<div class="row" ><!-- style="margin-top: -500px;margin-left: 0px;" -->
+			<div id="article" class="col-md-6">
+				<div class="panel panel-default" id="articleInfo">
+					<div class="panel-heading">
+						<h3 class="panel-title">Article List:</h3>
+						<!-- <input type="button" id="art-but" value="Get Article List Data" /> -->
+					</div>
+					<div class="panel-body">
+						<!-- <div id="articleInfoBody"></div> -->
+						<pre id="articleInfoBody">ALL:</pre>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 添加文章 -->
+		<div class="row">
+			<div id="addarticle" class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">ADD Article</h3>
+					</div>
+					<div class="panel-body" id="addarticlebody">
+						<div class="panel-body">
+						<form id="articleForm">
+							<div class="form-group">
+								<input type="text" class="form-control" id="title" 
+									placeholder="title" required name="title">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="lable" 
+									placeholder="lable" required name="lable">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="content" 
+									placeholder="content" required name="content">
+							</div>
+							<div>
+								<button type="submit" class="btn btn-default" 
+									id="artadd-but" >
+									ADD</button>
+							</div>
+							<br>
+						</form>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 文章分页 -->
+		<div class="row">
+			<div class="col-md-6" id="articlePage">
+				<div class="panel panel-default" id="articleInfoPage">
+					<div class="panel-heading">
+						<h3 class="panel-title">Article List Page:</h3>
+					</div>
+					<div class="panel-body">
+						<form id="pageForm">
+							<input type="text" id="page">
+							<input type="text" id="size">
+							<input type="submit" value="Do!" >
+						</form>
+						<pre id="articleInfoBodyPage">PAGE:</pre>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 文章详情 -->
+		<div class="row">
+			<div class="col-md-6" id="articleDetails">
+				<div class="panel panel-default" id="articleDetailsInfo">
+					<div class="panel-heading">
+						<h3 class="panel-title">Article Details:</h3>
+					</div>
+					<div class="panel-body">
+						<div id="articleDetailsInfoBody">Details:</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="modal fade" tabindex="-1" role="dialog"
+		id="loginErrorModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Login unsuccessful</h4>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+
+
+	<script src="https://code.jquery.com/jquery-2.2.2.js"
+		integrity="sha256-4/zUCqiq0kqxhZIyp4G0Gk+AOtCJsY1TA00k5ClsZYE="
+		crossorigin="anonymous"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+		crossorigin="anonymous"></script>
+	<script src="js/libs/jwt-decode.min.js"></script>
+	<script src="js/client.js"></script>
+	<!-- 本地jquery -->
+	<!-- <script src="js/libs/jquery-3.2.1.min.js"></script> -->
+</body>
+</html>
